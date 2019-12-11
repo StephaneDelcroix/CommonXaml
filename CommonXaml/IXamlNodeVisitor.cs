@@ -7,7 +7,6 @@ namespace CommonXaml
 {
 	public interface IXamlNodeVisitor
 	{
-		XamlParserConfiguration Config { get; }
 		TreeVisitingMode VisitingMode  { get; }
 		public bool ShouldSkipChildren(IXamlNode node);
 

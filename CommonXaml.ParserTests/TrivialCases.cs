@@ -25,8 +25,6 @@ namespace CommonXaml.ParserTests
 				SourceUri = new Uri("test.xaml", UriKind.RelativeOrAbsolute),
 				MinSupportedXamlVersion = XamlVersion.Xaml2009,
 			};
-			config.Transforms = new List<IXamlTransform> { new ApplyTypeArgumentsTransform(config) };
-			config.Validators = new List<IXamlValidator> { new XamlVersionValidator(config) };
 
 			parser = new XamlParser(config);
 		}

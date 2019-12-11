@@ -24,7 +24,8 @@ namespace CommonXaml
 		internal readonly Dictionary<IXamlPropertyName, IList<IXamlNode>> properties = new Dictionary<IXamlPropertyName, IList<IXamlNode>>();
 		public IReadOnlyDictionary<IXamlPropertyName, IList<IXamlNode>> Properties => properties;
 
-		public IXamlNode Parent { get; internal set; }
+		public XamlElement Parent { get; internal set; }
+
 		public IXamlNamespaceResolver NamespaceResolver { get; }
 
 		public int LineNumber { get; }
@@ -53,5 +54,17 @@ namespace CommonXaml
 			else
 				TryAdd(propertyName, new List<IXamlNode> { propertyValue });
 		}
+
+		internal void ReplaceNode(XamlLiteral original, IXamlNode replacement)
+		{
+			foreach (var prop in properties) {
+				if (prop.Value.Contains(original)) {
+					prop.Value.Remove(original);
+					replacement.SetParent(this);
+					prop.Value.Add(replacement);
+				}
+			}
+		}
+
 	}
 }

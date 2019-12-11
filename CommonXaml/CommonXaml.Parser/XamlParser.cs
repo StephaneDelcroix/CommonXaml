@@ -12,26 +12,14 @@ namespace CommonXaml.Parser
 {
 	public class XamlParser
 	{
-		public XamlParserConfiguration Config { get; }
+		public IXamlParserConfiguration Config { get; }
 
-		public XamlParser(XamlParserConfiguration config) => Config = config;
+		public XamlParser(IXamlParserConfiguration config) => Config = config;
 
 		public bool TryProcess(XmlReader reader, out XamlElement rootnode, out IList<Exception> exceptions)
 		{
 			if (!TryParse(reader, out rootnode, out exceptions))
 				return false;
-
-			if (Config.Transforms != null)
-				foreach (var transform in Config.Transforms) {
-					rootnode.Accept(transform);
-					AppendExceptions(ref exceptions, transform.TransformExceptions);
-				}
-
-			if (Config.Validators != null)
-				foreach (var validator in Config.Validators) {
-					rootnode.Accept(validator);
-					AppendExceptions(ref exceptions, validator.ValidationErrors);
-				}
 
 			return exceptions == null || Config.ContinueOnError;
 		}
@@ -121,7 +109,7 @@ namespace CommonXaml.Parser
 				reader.MoveToAttribute(i);
 
 				var propertyName = new XamlPropertyIdentifier(reader.NamespaceURI, reader.LocalName, Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition);
-				var literal = new XamlLiteral(reader.Value, new XamlNamespaceResolver((IXmlNamespaceResolver)reader), Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition);
+				var literal = new XamlLiteral(reader.Value.Trim(), new XamlNamespaceResolver((IXmlNamespaceResolver)reader), Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition);
 				if (!element.TryAdd(propertyName, new List<IXamlNode> { literal }))
 					(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1010, new[] { propertyName.LocalName}, propertyName));
 			}

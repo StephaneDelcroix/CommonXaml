@@ -15,6 +15,9 @@ namespace CommonXaml
 		public static XamlExceptionCode CXAML1011 = new XamlExceptionCode(nameof(CXAML1011), "Unexpected empty element '<{0} />'.", "");
 		public static XamlExceptionCode CXAML1012 = new XamlExceptionCode(nameof(CXAML1012), "No xmlns declaration for prefix '{0}'.", "");
 
+		//xaml markup
+		public static XamlExceptionCode CXAML1020 = new XamlExceptionCode(nameof(CXAML1020), "Markup expression must end with '}'.", "");
+
 
 		public string ErrorCode { get; }
 		public string ErrorMessage { get; }

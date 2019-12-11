@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using static CommonXaml.XamlExceptionCode;
 namespace CommonXaml
 {
 	[DebuggerDisplay("{NamespaceUri}:{Name}")]
@@ -21,6 +23,29 @@ namespace CommonXaml
 		public string NamespaceUri { get; }
 		public string Name { get; }
 		public IReadOnlyList<XamlType> TypeArguments { get; }
+
+		public static bool TryParse(string type, IXamlNamespaceResolver resolver, IXamlSourceInfo sourceInfo, out XamlType xamlType, out IList<Exception> exceptions)
+		{
+			exceptions = null;
+
+			var parts = type.Split(new[] { ':' }, 2);
+			string prefix, name;
+			if (parts.Length == 2) {
+				prefix = parts[0];
+				name = parts[1];
+			}
+			else {
+				prefix = "";
+				name = parts[0];
+			}
+
+			var namespaceuri = resolver.LookupNamespace(prefix);
+			if (namespaceuri == null)
+				(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1012, new[] { prefix }, sourceInfo));
+
+			xamlType = new XamlType(namespaceuri, name, null);
+			return exceptions == null;
+		}
 
 		public override bool Equals(object obj)
 		{

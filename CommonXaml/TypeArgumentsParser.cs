@@ -55,15 +55,15 @@ namespace CommonXaml
 				type = type.Substring(0, type.IndexOf('('));
 			}
 
-			var split = type.Split(new[] { ':' }, 2);
+			var parts = type.Split(new[] { ':' }, 2);
 
 			string prefix, name;
-			if (split.Length == 2) {
-				prefix = split [0];
-				name = split [1];
+			if (parts.Length == 2) {
+				prefix = parts [0];
+				name = parts [1];
 			} else {
 				prefix = "";
-				name = split [0];
+				name = parts [0];
 			}
 
 			var namespaceuri = resolver.LookupNamespace(prefix);

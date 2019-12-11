@@ -3,19 +3,19 @@
 
 using System;
 using System.Collections.Generic;
-
+using CommonXaml.Parser;
 using static CommonXaml.XamlExceptionCode;
 
 namespace CommonXaml.Validators
 {
 	public class XamlVersionValidator : IXamlValidator
 	{
-		public XamlParserConfiguration Config { get; }
+		public IXamlVersionValidationConfiguration Config { get; }
 		public IList<Exception> ValidationErrors { get; private set; }
 		public IXamlNodeVisitor.TreeVisitingMode VisitingMode => IXamlNodeVisitor.TreeVisitingMode.TopDown;
 		public bool ShouldSkipChildren(IXamlNode node) => false;
 
-		public XamlVersionValidator(XamlParserConfiguration config) => Config = config;
+		public XamlVersionValidator(IXamlVersionValidationConfiguration config) => Config = config;
 
 		public void Visit(XamlLiteral node)
 		{

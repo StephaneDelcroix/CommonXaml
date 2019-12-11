@@ -20,7 +20,7 @@ namespace CommonXaml
 
 		public string Literal { get; internal set; }
 
-		public IXamlNode Parent { get; internal set; }
+		public XamlElement Parent { get; internal set; }
 		public IXamlNamespaceResolver NamespaceResolver { get; }
 
 		public int LineNumber { get; }

@@ -3,12 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CommonXaml
 {
 	public interface IXamlTransform
 	{
-		XamlParserConfiguration Config { get; }
 		TreeVisitingMode VisitingMode { get; }
 		IList<Exception> TransformExceptions { get; }
 
@@ -44,7 +44,7 @@ namespace CommonXaml
 
 			if (!transform.ShouldSkipChildren(self)) {
 				foreach (var nodelist in self.Properties.Values)
-					foreach (var node in nodelist)
+					foreach (var node in nodelist.ToList())
 						node.Accept(transform);
 			}
 

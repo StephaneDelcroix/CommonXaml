@@ -16,20 +16,15 @@ namespace CommonXaml.ParserTests
 	public class GenericsTests
 	{
 		XamlParser parser;
+		XamlParserConfiguration config;
 
 		[SetUp]
 		public void Setup()
 		{
-			var config = new XamlParserConfiguration {
+			config = new XamlParserConfiguration {
 				SourceUri = new Uri("test.xaml", UriKind.RelativeOrAbsolute),
 				MinSupportedXamlVersion = XamlVersion.Xaml2009,
 			};
-			config.Transforms = new List<IXamlTransform> {
-				new ExpandMarkupExtensionsTransform(config),
-				new ApplyTypeArgumentsTransform(config),
-			};
-			config.Validators = new List<IXamlValidator> { new XamlVersionValidator(config) };
-
 			parser = new XamlParser(config);
 		}
 
@@ -57,6 +52,10 @@ namespace CommonXaml.ParserTests
 			using var textreader = new StringReader(genericXaml);
 			using var xmlreader = XmlReader.Create(textreader);
 			Assert.That(parser.TryProcess(xmlreader, out var root, out _), Is.True);
+			(true, root).Transform(new ExpandMarkupExtensionsTransform())
+						.Transform(new ApplyTypeArgumentsTransform())
+						.Validate(new XamlVersionValidator(config));
+
 			var content = root.Properties[new XamlPropertyIdentifier("http://commonxaml/controls", "Control.Content")][0] as XamlElement;
 			Assert.True(content.XamlType ==
 				new XamlType("clr-namespace:System.Collections.Generic;assembly=mscorlib", "List", new List<XamlType>{
