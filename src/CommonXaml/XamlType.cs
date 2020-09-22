@@ -70,16 +70,8 @@ namespace CommonXaml
 			return true;
 		}
 
-		public override int GetHashCode()
-		{
-			unchecked {
-				return (NamespaceUri, Name, TypeArguments).GetHashCode();
-			}
-		}
-
-		public static bool operator ==(XamlType x1, XamlType x2)
-			=> x1.Equals(x2);
-		public static bool operator !=(XamlType x1, XamlType x2)
-			=> !(x1 == x2);
+        public override int GetHashCode() => HashCode.Combine(NamespaceUri, Name, TypeArguments);
+        public static bool operator ==(XamlType x1, XamlType x2) => x1.Equals(x2);
+		public static bool operator !=(XamlType x1, XamlType x2) => !(x1 == x2);
 	}
 }

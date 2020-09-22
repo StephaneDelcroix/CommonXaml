@@ -8,6 +8,7 @@
     <PackageReference Include="NUnit" Version="3.12.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonXaml\CommonXaml.csproj" />
+    <ProjectReference Include="..\..\src\CommonXaml\CommonXaml.csproj" />
+    <ProjectReference Include="..\..\src\CommonXaml.RuntimeInflator\CommonXaml.RuntimeInflator.csproj" />
   </ItemGroup>
 </Project>

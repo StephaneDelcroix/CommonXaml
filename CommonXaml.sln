@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F57F96DB-1C8D-41BC-AE7E-847EA65B4822}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml.ParserTests", "CommonXaml.ParserTests\CommonXaml.ParserTests.csproj", "{D8F94ADA-9086-4458-BC0F-3BB1021F0B70}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml.ParserTests", "tests\CommonXaml.ParserTests\CommonXaml.ParserTests.csproj", "{D8F94ADA-9086-4458-BC0F-3BB1021F0B70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml", "CommonXaml\CommonXaml.csproj", "{ABED84FF-6937-4F15-A917-FE4FE22BE70A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml", "src\CommonXaml\CommonXaml.csproj", "{ABED84FF-6937-4F15-A917-FE4FE22BE70A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml.RuntimeInflator", "src\CommonXaml.RuntimeInflator\CommonXaml.RuntimeInflator.csproj", "{D9FE12AC-F572-4286-BBF3-DCC95FC20E36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml.RuntimeInflatorTests", "tests\CommonXaml.RuntimeInflatorTests\CommonXaml.RuntimeInflatorTests.csproj", "{4B737A52-8E99-41E6-AFD8-1FB15DE50975}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +25,17 @@ Global
 		{ABED84FF-6937-4F15-A917-FE4FE22BE70A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABED84FF-6937-4F15-A917-FE4FE22BE70A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABED84FF-6937-4F15-A917-FE4FE22BE70A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9FE12AC-F572-4286-BBF3-DCC95FC20E36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9FE12AC-F572-4286-BBF3-DCC95FC20E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9FE12AC-F572-4286-BBF3-DCC95FC20E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9FE12AC-F572-4286-BBF3-DCC95FC20E36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B737A52-8E99-41E6-AFD8-1FB15DE50975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B737A52-8E99-41E6-AFD8-1FB15DE50975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B737A52-8E99-41E6-AFD8-1FB15DE50975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B737A52-8E99-41E6-AFD8-1FB15DE50975}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D8F94ADA-9086-4458-BC0F-3BB1021F0B70} = {F57F96DB-1C8D-41BC-AE7E-847EA65B4822}
+		{4B737A52-8E99-41E6-AFD8-1FB15DE50975} = {F57F96DB-1C8D-41BC-AE7E-847EA65B4822}
 	EndGlobalSection
 EndGlobal
