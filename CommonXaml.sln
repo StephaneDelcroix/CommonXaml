@@ -38,4 +38,26 @@ Global
 		{D8F94ADA-9086-4458-BC0F-3BB1021F0B70} = {F57F96DB-1C8D-41BC-AE7E-847EA65B4822}
 		{4B737A52-8E99-41E6-AFD8-1FB15DE50975} = {F57F96DB-1C8D-41BC-AE7E-847EA65B4822}
 	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 160
+		$1.TabsToSpaces = True
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.scope = text/x-csharp
+		$2.IndentSwitchSection = False
+		$2.NewLinesForBracesInProperties = False
+		$2.NewLinesForBracesInAccessors = False
+		$2.NewLinesForBracesInAnonymousMethods = False
+		$2.NewLinesForBracesInControlBlocks = False
+		$2.NewLinesForBracesInAnonymousTypes = False
+		$2.NewLinesForBracesInObjectCollectionArrayInitializers = False
+		$2.NewLinesForBracesInLambdaExpressionBody = False
+		$2.NewLineForElse = False
+		$2.NewLineForCatch = False
+		$2.NewLineForFinally = False
+		$0.StandardHeader = $3
+		$3.Text = @Copyright (c) Microsoft Corporation.\nLicensed under the MIT License.
+	EndGlobalSection
 EndGlobal

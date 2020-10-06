@@ -16,34 +16,27 @@ namespace CommonXaml.ParserTests
 	[TestFixture]
 	public class TrivialCases
 	{
-		XamlParser parser;
+		XamlParser? parser;
 
 		[SetUp]
 		public void Setup()
 		{
-			var config = new XamlParserConfiguration {
-				SourceUri = new Uri("test.xaml", UriKind.RelativeOrAbsolute),
-				MinSupportedXamlVersion = XamlVersion.Xaml2009,
-			};
-
+			var config = new XamlParserConfiguration(new Uri("test.xaml", UriKind.RelativeOrAbsolute), XamlVersion.Xaml2009);
 			parser = new XamlParser(config);
 		}
 
-		[TearDown]
-		public void TearDown()
-		{
-			parser = null;
-		}
+        [TearDown]
+        public void TearDown() => parser = null;
 
-		[Test]
+        [Test]
 		public void RootWithAttributeProperty()
 		{
 			using var textreader = new StringReader(
 @"<Control Title=""Foo"" />");
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
-			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
+			Assert.That(rootNode!.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
 			Assert.True(key == new XamlPropertyName("", "Title"));
@@ -56,8 +49,8 @@ namespace CommonXaml.ParserTests
 			using var textreader = new StringReader(
 @"<Control Title=""Foo"" Name=""Bar""/>");
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("", "Control")));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control")));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(2));
 
 			var key = rootNode.Properties.Keys.First();
@@ -79,8 +72,8 @@ namespace CommonXaml.ParserTests
 	</Control.Content>
 </Control>");
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("", "Control")));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control")));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
@@ -104,8 +97,8 @@ namespace CommonXaml.ParserTests
 	</Control.Footer>
 </Control>");
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("", "Control")));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control")));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(3));
 
 			var key = rootNode.Properties.Keys.First();
@@ -129,8 +122,8 @@ namespace CommonXaml.ParserTests
 	<View />
 </Control>");
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
@@ -151,8 +144,8 @@ namespace CommonXaml.ParserTests
 	</Control.Content>
 </Control>");
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
@@ -173,8 +166,8 @@ namespace CommonXaml.ParserTests
 	<View />
 </Control>");
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
@@ -207,7 +200,7 @@ namespace CommonXaml.ParserTests
 		{
 			using var textreader = new StringReader(validXaml09);
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out _, out _), Is.True);
+			Assert.That(parser!.TryProcess(xmlreader, out _, out _), Is.True);
 		}
 
 		[Test]
@@ -215,8 +208,8 @@ namespace CommonXaml.ParserTests
 		{
 			using var textreader = new StringReader(validXaml09);
 			using var xmlreader = XmlReader.Create(textreader);
-			Assert.That(parser.TryProcess(xmlreader, out var rootNode, out _), Is.True);
-			Assert.That(rootNode.XamlType, Is.EqualTo(new XamlType("http://commonxaml/controls", "Control", null)));
+			Assert.That(parser!.TryProcess(xmlreader, out var rootNode, out _), Is.True);
+			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("http://commonxaml/controls", "Control", null)));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(5));
 
 

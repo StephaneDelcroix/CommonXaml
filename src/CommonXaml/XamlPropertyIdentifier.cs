@@ -14,9 +14,9 @@ namespace CommonXaml
 
 		public int LineNumber { get; }
 		public int LinePosition { get; }
-		public Uri SourceUri { get; }
+		public Uri? SourceUri { get; }
 
-		public XamlPropertyIdentifier(string namespaceUri, string localName, Uri sourceUri = null, int lineNumber = -1, int linePosition = -1)
+		public XamlPropertyIdentifier(string namespaceUri, string localName, Uri? sourceUri = null, int lineNumber = -1, int linePosition = -1)
 		{
 			NamespaceUri = namespaceUri;
 			LocalName = localName;
@@ -36,17 +36,7 @@ namespace CommonXaml
 			return NamespaceUri == other.NamespaceUri && LocalName == other.LocalName;
 		}
 
-		public override int GetHashCode()
-		{
-			unchecked {
-				int hashCode = 0;
-				if (NamespaceUri != null)
-					hashCode = NamespaceUri.GetHashCode();
-				if (LocalName != null)
-					hashCode = (hashCode * 397) ^ LocalName.GetHashCode();
-				return hashCode;
-			}
-		}
+		public override int GetHashCode() => (NamespaceUri, LocalName).GetHashCode();
 
 		public static bool operator ==(XamlPropertyIdentifier x1, IXamlPropertyName x2)
 			=> x1.NamespaceUri == x2.NamespaceUri && x1.LocalName == x2.LocalName;

@@ -9,7 +9,7 @@ namespace CommonXaml
 	{
 		int LineNumber { get; }
 		int LinePosition { get; }
-		Uri SourceUri { get; }
+		Uri? SourceUri { get; }
 		public bool HasSourceInfo();
 	}
 }

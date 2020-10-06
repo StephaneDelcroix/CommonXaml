@@ -16,17 +16,17 @@ namespace CommonXaml
 
 		public static (bool success, IXamlNode root) Transform(this (bool success, IXamlNode root) continuation, IXamlTransform transform)
 		{
-			if (!continuation.success)
-				return (false, continuation.root);
-
 			continuation.root.Accept(transform);
-			return (transform.TransformExceptions == null, continuation.root);
+			return (continuation.success && transform.Errors == null, continuation.root);
 		}
 
 		public static (bool success, IXamlNode root) Validate(this (bool success, IXamlNode root) continuation, IXamlValidator validator)
+			=> continuation.Visit(validator);		
+
+		public static (bool success, IXamlNode root) Visit(this (bool success, IXamlNode root) continuation, IXamlNodeVisitor visitor)
 		{
-			continuation.root.Accept(validator);
-			return (validator.ValidationErrors == null, continuation.root);
+			continuation.root.Accept(visitor);
+			return (continuation.success && visitor.Errors == null, continuation.root);
 		}
 	}
 }

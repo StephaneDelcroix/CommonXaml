@@ -9,8 +9,14 @@ namespace CommonXaml.ParserTests
 {
 	class XamlParserConfiguration : IXamlParserConfiguration, IXamlVersionValidationConfiguration
 	{
-		public Uri SourceUri { get; set; }
-		public XamlVersion MinSupportedXamlVersion { get; set; }
-		public bool ContinueOnError { get; set; } = false;
+        public XamlParserConfiguration(Uri sourceUri, XamlVersion minSupportedVersion)
+        {
+			SourceUri = sourceUri;
+			MinSupportedXamlVersion = minSupportedVersion;
+        }
+
+		public Uri SourceUri { get;  }
+		public XamlVersion MinSupportedXamlVersion { get; }
+		public bool ContinueOnError { get; } = false;
 	}
 }

@@ -5,6 +5,6 @@ namespace CommonXaml.Validators
 {
 	public interface IXamlVersionValidationConfiguration
 	{
-		XamlVersion MinSupportedXamlVersion { get; set; }
+		XamlVersion MinSupportedXamlVersion { get; }
 	}
 }

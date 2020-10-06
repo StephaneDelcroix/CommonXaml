@@ -16,7 +16,7 @@ namespace CommonXaml.Parser
 
 		public XamlParser(IXamlParserConfiguration config) => Config = config;
 
-		public bool TryProcess(XmlReader reader, out XamlElement rootnode, out IList<Exception> exceptions)
+		public bool TryProcess(XmlReader reader, out XamlElement? rootnode, out IList<Exception>? exceptions)
 		{
 			if (!TryParse(reader, out rootnode, out exceptions))
 				return false;
@@ -24,7 +24,7 @@ namespace CommonXaml.Parser
 			return exceptions == null || Config.ContinueOnError;
 		}
 
-		bool TryParse(XmlReader reader, out XamlElement rootnode, out IList<Exception> exceptions)
+		bool TryParse(XmlReader reader, out XamlElement? rootnode, out IList<Exception>? exceptions)
 		{
 			exceptions = null;
 			rootnode = null;
@@ -41,7 +41,7 @@ namespace CommonXaml.Parser
 			return exceptions == null || Config.ContinueOnError;
 		}
 
-		bool TryParseElements(XmlReader reader, out IList<IXamlNode> nodes, out IList<Exception> exceptions)
+		bool TryParseElements(XmlReader reader, out IList<IXamlNode> nodes, out IList<Exception>? exceptions)
 		{
 			exceptions = null;
 			Debug.Assert(reader.NodeType == XmlNodeType.Element);
@@ -74,7 +74,7 @@ namespace CommonXaml.Parser
 			return exceptions == null || Config.ContinueOnError;
 		}
 
-		bool TryParseElement(XmlReader reader, out XamlElement node, out IList<Exception> exceptions)
+		bool TryParseElement(XmlReader reader, out XamlElement node, out IList<Exception>? exceptions)
 		{
 			exceptions = null;
 			Debug.Assert(reader.NodeType == XmlNodeType.Element);
@@ -98,7 +98,7 @@ namespace CommonXaml.Parser
 			return exceptions == null || Config.ContinueOnError;
 		}
 
-		bool TryParseAttributeProperties(XamlElement element, XmlReader reader, out IList<Exception> exceptions)
+		bool TryParseAttributeProperties(XamlElement element, XmlReader reader, out IList<Exception>? exceptions)
 		{
 			exceptions = null;
 			Debug.Assert(reader.NodeType == XmlNodeType.Element);
@@ -118,7 +118,7 @@ namespace CommonXaml.Parser
 			return exceptions == null || Config.ContinueOnError;
 		}
 
-		bool TryParseElementProperties(XamlElement element, XmlReader reader, out IList<Exception> exceptions)
+		bool TryParseElementProperties(XamlElement element, XmlReader reader, out IList<Exception>? exceptions)
 		{
 			var elementNsUri = reader.NamespaceURI;
 			exceptions = null;
@@ -147,7 +147,7 @@ namespace CommonXaml.Parser
 						propertyName = new XamlPropertyIdentifier(!string.IsNullOrEmpty(reader.NamespaceURI) ? reader.NamespaceURI : elementNsUri, reader.LocalName, Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition);
 
 						if (reader.IsEmptyElement) {
-							(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1011, new[] { reader.Name }, propertyName as IXamlSourceInfo));
+							(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1011, new[] { reader.Name }, (IXamlSourceInfo)propertyName));
 							return exceptions == null || Config.ContinueOnError;
 						}
 
@@ -163,7 +163,7 @@ namespace CommonXaml.Parser
 					}
 
 					if (!element.TryAdd(propertyName, valueNodes))
-						(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1010, new[] { reader.Name }, propertyName as IXamlSourceInfo));
+						(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1010, new[] { reader.Name }, propertyName as IXamlSourceInfo ?? element));
 
 					AppendExceptions(ref exceptions, elementExceptions);
 					break;
@@ -173,7 +173,7 @@ namespace CommonXaml.Parser
 			return exceptions == null || Config.ContinueOnError;
 		}
 
-		static void AppendExceptions(ref IList<Exception> exceptions, IList<Exception> additionalExceptions)
+		static void AppendExceptions(ref IList<Exception>? exceptions, IList<Exception>? additionalExceptions)
 		{
 			if (additionalExceptions == null)
 				return;

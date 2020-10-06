@@ -10,7 +10,7 @@ namespace CommonXaml
 	public interface IXamlTransform
 	{
 		TreeVisitingMode VisitingMode { get; }
-		IList<Exception> TransformExceptions { get; }
+		IList<Exception>? Errors { get; }
 
 		public bool ShouldSkipChildren(IXamlNode node);
 		void Transform(XamlLiteral node);

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 
 namespace CommonXaml
 {
@@ -9,6 +10,7 @@ namespace CommonXaml
 	{
 		TreeVisitingMode VisitingMode  { get; }
 		public bool ShouldSkipChildren(IXamlNode node);
+		IList<Exception>? Errors { get; }
 
 		void Visit(XamlLiteral node);
 		void Visit(XamlElement node);

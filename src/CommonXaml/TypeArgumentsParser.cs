@@ -10,7 +10,7 @@ namespace CommonXaml
 {
 	public static class TypeArgumentsParser
 	{
-		public static bool TryParseTypeArguments(string expression, IXamlNamespaceResolver resolver, IXamlSourceInfo sourceInfo, out IList<XamlType> types, out IList<Exception> exceptions)
+		public static bool TryParseTypeArguments(string expression, IXamlNamespaceResolver resolver, IXamlSourceInfo sourceInfo, out IList<XamlType> types, out IList<Exception>? exceptions)
 		{
 			types = new List<XamlType>();
 			exceptions = null;
@@ -26,10 +26,11 @@ namespace CommonXaml
 			return exceptions == null;
 		}
 
-		static bool Parse(string match, ref string remaining, IXamlNamespaceResolver resolver, IXamlSourceInfo sourceInfo, out XamlType xamltype, out IList<Exception> exceptions)
+		static bool Parse(string match, ref string remaining, IXamlNamespaceResolver resolver, IXamlSourceInfo sourceInfo, out XamlType xamltype, out IList<Exception>? exceptions)
 		{
 			exceptions = null;
-			remaining = null;
+			xamltype = XamlType.Empty;
+			remaining = string.Empty;
 			int parensCount = 0;
 			bool isGeneric = false;
 
@@ -48,7 +49,7 @@ namespace CommonXaml
 			}
 			var type = match.Substring(0, pos).Trim();
 
-			IList<XamlType> typeArguments = null;
+			IList<XamlType>? typeArguments = null;
 			if (isGeneric) {
 				if (!TryParseTypeArguments(type.Substring(type.IndexOf('(') + 1, type.LastIndexOf(')') - type.IndexOf('(') - 1), resolver, sourceInfo, out typeArguments, out var parseexceptions))
 					((List<Exception>)(exceptions ??= new List<Exception>())).AddRange(parseexceptions);
@@ -69,8 +70,8 @@ namespace CommonXaml
 			var namespaceuri = resolver.LookupNamespace(prefix);
 			if (namespaceuri == null)
 				(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1012, new[] { prefix }, sourceInfo));
-
-			xamltype = new XamlType(namespaceuri, name, typeArguments as List<XamlType>);
+			else
+				xamltype = new XamlType(namespaceuri, name, typeArguments as List<XamlType>);
 			return exceptions == null;
 		}
 	}

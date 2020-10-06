@@ -11,7 +11,7 @@ namespace CommonXaml.Validators
 	public class XamlVersionValidator : IXamlValidator
 	{
 		public IXamlVersionValidationConfiguration Config { get; }
-		public IList<Exception> ValidationErrors { get; private set; }
+		public IList<Exception>? Errors { get; internal set; }
 		public IXamlNodeVisitor.TreeVisitingMode VisitingMode => IXamlNodeVisitor.TreeVisitingMode.TopDown;
 		public bool ShouldSkipChildren(IXamlNode node) => false;
 
@@ -29,11 +29,11 @@ namespace CommonXaml.Validators
 					&& propertyName.LocalName != "Name"
 					&& propertyName.LocalName != "Class"
 					&& propertyName.LocalName != "FieldModifier")
-					AddValidationError(new XamlParseException(CXAML1000, new[] { propertyName.LocalName, propertyName.NamespaceUri }, propertyName as IXamlSourceInfo));
+					AddError(new XamlParseException(CXAML1000, new[] { propertyName.LocalName, propertyName.NamespaceUri }, (IXamlSourceInfo)propertyName));
 
 				if (propertyName.NamespaceUri == XamlPropertyName.Xaml2009Uri) {
 					if ((int)Config.MinSupportedXamlVersion < (int)XamlVersion.Xaml2009)
-						AddValidationError(new XamlParseException(CXAML1002, null, propertyName as IXamlSourceInfo));
+						AddError(new XamlParseException(CXAML1002, null, (IXamlSourceInfo)propertyName));
 					else if (  propertyName.LocalName != "Key"
 							&& propertyName.LocalName != "Name"
 							&& propertyName.LocalName != "Class"
@@ -42,7 +42,7 @@ namespace CommonXaml.Validators
 							&& propertyName.LocalName != "DataType"
 							&& propertyName.LocalName != "FactoryMethod"
 							&& propertyName.LocalName != "Arguments")
-						AddValidationError(new XamlParseException(CXAML1000, new[] { propertyName.LocalName, propertyName.NamespaceUri }, propertyName as IXamlSourceInfo));
+						AddError(new XamlParseException(CXAML1000, new[] { propertyName.LocalName, propertyName.NamespaceUri }, (IXamlSourceInfo)propertyName));
 				}
 
 				if (   (   propertyName.NamespaceUri == XamlPropertyName.Xaml2006Uri
@@ -55,10 +55,11 @@ namespace CommonXaml.Validators
 						|| propertyName.LocalName == "DataType"
 						|| propertyName.LocalName == "FactoryMethod")
 					&& !(node.Properties[propertyName] is IList<IXamlNode> nodes && nodes.Count==1 && nodes[0] is XamlLiteral))
-					AddValidationError(new XamlParseException(CXAML1001, new[] { propertyName.LocalName }, propertyName as IXamlSourceInfo));
+					AddError(new XamlParseException(CXAML1001, new[] { propertyName.LocalName }, (IXamlSourceInfo)propertyName));
 			}
 		}
 
-		void AddValidationError(Exception exception) => (ValidationErrors ??= new List<Exception>()).Add(exception);
+		//should be a default interface member impl
+		void AddError(Exception exception) => (Errors ??= new List<Exception>()).Add(exception);
 	}
 }

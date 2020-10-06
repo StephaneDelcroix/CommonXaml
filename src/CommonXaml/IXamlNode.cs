@@ -5,7 +5,7 @@ namespace CommonXaml
 {
 	public interface IXamlNode : IXamlSourceInfo
 	{
-		XamlElement Parent { get; }
+		XamlElement? Parent { get; }
 		IXamlNamespaceResolver NamespaceResolver { get; }
 	}
 }

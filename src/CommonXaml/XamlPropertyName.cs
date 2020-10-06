@@ -6,6 +6,7 @@ using System.Diagnostics;
 namespace CommonXaml
 {
 	[DebuggerDisplay("{NamespaceURI}:{LocalName}")]
+	//TODO: replace by XamlPropertyIdentifier
 	public readonly struct XamlPropertyName : IXamlPropertyName
 	{
 		public const string Xaml2006Uri = "http://schemas.microsoft.com/winfx/2006/xaml";
@@ -25,30 +26,16 @@ namespace CommonXaml
 		{
 			if (obj == null)
 				return false;
-			if (!(obj is IXamlPropertyName other))
+			if (obj is not IXamlPropertyName other)
 				return false;
 			return NamespaceUri == other.NamespaceUri && LocalName == other.LocalName;
 		}
 
-		public override int GetHashCode()
-		{
-			unchecked {
-				int hashCode = 0;
-				if (NamespaceUri != null)
-					hashCode = NamespaceUri.GetHashCode();
-				if (LocalName != null)
-					hashCode = (hashCode * 397) ^ LocalName.GetHashCode();
-				return hashCode;
-			}
-		}
+        public override int GetHashCode() => (NamespaceUri, LocalName).GetHashCode();
 
-		public static bool operator ==(XamlPropertyName x1, IXamlPropertyName x2)
-			=> x1.NamespaceUri == x2.NamespaceUri && x1.LocalName == x2.LocalName;
-		public static bool operator ==(IXamlPropertyName x1, XamlPropertyName x2)
-			=> x1.NamespaceUri == x2.NamespaceUri && x1.LocalName == x2.LocalName;
-		public static bool operator !=(XamlPropertyName x1, IXamlPropertyName x2)
-			=> !(x1 == x2);
-		public static bool operator !=(IXamlPropertyName x1, XamlPropertyName x2)
-			=> !(x1 == x2);
+		public static bool operator ==(XamlPropertyName x1, IXamlPropertyName x2) => x1.NamespaceUri == x2.NamespaceUri && x1.LocalName == x2.LocalName;
+		public static bool operator ==(IXamlPropertyName x1, XamlPropertyName x2) => x1.NamespaceUri == x2.NamespaceUri && x1.LocalName == x2.LocalName;
+		public static bool operator !=(XamlPropertyName x1, IXamlPropertyName x2) => !(x1 == x2);
+		public static bool operator !=(IXamlPropertyName x1, XamlPropertyName x2) => !(x1 == x2);
 	}
 }

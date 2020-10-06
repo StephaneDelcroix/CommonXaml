@@ -3,8 +3,6 @@ namespace CommonXaml.RuntimeInflatorTests
 {
     public class View
     {
-        public View()
-        {
-        }
+        public string? Text { get; set; }
     }
 }

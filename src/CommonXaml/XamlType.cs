@@ -11,9 +11,9 @@ namespace CommonXaml
 	[DebuggerDisplay("{NamespaceUri}:{Name}")]
 	public readonly struct XamlType
 	{
-		public  static readonly XamlType Empty;
+		public static readonly XamlType Empty;
 
-		public XamlType(string namespaceUri, string name, IReadOnlyList<XamlType> typeArguments = null)
+		public XamlType(string namespaceUri, string name, IReadOnlyList<XamlType>? typeArguments = null)
 		{
 			NamespaceUri = namespaceUri;
 			Name = name;
@@ -22,11 +22,12 @@ namespace CommonXaml
 
 		public string NamespaceUri { get; }
 		public string Name { get; }
-		public IReadOnlyList<XamlType> TypeArguments { get; }
+		public IReadOnlyList<XamlType>? TypeArguments { get; }
 
-		public static bool TryParse(string type, IXamlNamespaceResolver resolver, IXamlSourceInfo sourceInfo, out XamlType xamlType, out IList<Exception> exceptions)
+		public static bool TryParse(string type, IXamlNamespaceResolver resolver, IXamlSourceInfo sourceInfo, out XamlType xamlType, out IList<Exception>? exceptions)
 		{
 			exceptions = null;
+			xamlType = Empty;
 
 			var parts = type.Split(new[] { ':' }, 2);
 			string prefix, name;
@@ -42,8 +43,8 @@ namespace CommonXaml
 			var namespaceuri = resolver.LookupNamespace(prefix);
 			if (namespaceuri == null)
 				(exceptions ??= new List<Exception>()).Add(new XamlParseException(CXAML1012, new[] { prefix }, sourceInfo));
-
-			xamlType = new XamlType(namespaceuri, name, null);
+			else
+				xamlType = new XamlType(namespaceuri, name, null);
 			return exceptions == null;
 		}
 
@@ -70,8 +71,23 @@ namespace CommonXaml
 			return true;
 		}
 
-        public override int GetHashCode() => HashCode.Combine(NamespaceUri, Name, TypeArguments);
+		public override int GetHashCode()
+        {
+			unchecked {
+				return (NamespaceUri, Name, TypeArguments).GetHashCode();
+			}
+		}
+
+        public override string ToString() => $"{NamespaceUri}:{Name}";
+
         public static bool operator ==(XamlType x1, XamlType x2) => x1.Equals(x2);
 		public static bool operator !=(XamlType x1, XamlType x2) => !(x1 == x2);
+
+		public void Deconstruct(out string namespaceUri, out string name, out IReadOnlyList<XamlType>? typeArguments)
+        {
+			namespaceUri = NamespaceUri;
+			name = Name;
+			typeArguments = TypeArguments;
+		}
 	}
 }

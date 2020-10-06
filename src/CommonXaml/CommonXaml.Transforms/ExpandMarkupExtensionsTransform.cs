@@ -11,8 +11,8 @@ namespace CommonXaml.Transforms
 	public class ExpandMarkupExtensionsTransform : IXamlTransform
 	{
 		public IXamlTransform.TreeVisitingMode VisitingMode => IXamlTransform.TreeVisitingMode.TopDown;
-		private IList<Exception> transformExceptions;
-		public IList<Exception> TransformExceptions { get => transformExceptions; }
+		IList<Exception>? transformExceptions;
+		public IList<Exception>? Errors { get => transformExceptions; }
 		public bool ShouldSkipChildren(IXamlNode node) => false;
 
 		public void Transform(XamlLiteral node)
@@ -25,31 +25,33 @@ namespace CommonXaml.Transforms
 				return;
 
 			var markup = node.Literal;
-			var markupNode = ExpandMarkup(ref markup, node);
-			node.Parent.ReplaceNode(node, markupNode);
+			if (ExpandMarkup(ref markup, node) is IXamlNode markupNode)
+				node.Parent?.ReplaceNode(node, markupNode);
 		}
 
 		public void Transform(XamlElement node)
 		{
 		}
 
-		IXamlNode ExpandMarkup(ref string expression, IXamlNode originalNode)
+		IXamlNode? ExpandMarkup(ref string expression, IXamlNode originalNode)
 		{
 			if (expression.StartsWith("{}", StringComparison.Ordinal))
 				return new XamlLiteral(expression.Substring(2), originalNode.NamespaceResolver, originalNode.SourceUri, originalNode.LineNumber, originalNode.LinePosition);
 			if (expression[expression.Length - 1] != '}')
 				AppendExceptions(ref transformExceptions, new XamlParseException(CXAML1020, new string[0], originalNode, null));
 
-			MatchMarkup(out var match, expression, out var len);
+			var matching = MatchMarkup(out var match, expression, out var len);
 			expression = expression.Substring(len).TrimStart();
 
 			if (expression.Length == 0)
 				AppendExceptions(ref transformExceptions, new XamlParseException(CXAML1020, new string[0], originalNode, null));
 
-			return Parse(match, originalNode, ref expression);
+			if (matching)
+				return Parse(match!, originalNode, ref expression);
+			return null;
 		}
 
-		XamlElement Parse(string match, IXamlNode originalNode, ref string remainder)
+		XamlElement? Parse(string match, IXamlNode originalNode, ref string remainder)
 		{
 			if (!XamlType.TryParse(match, originalNode.NamespaceResolver, originalNode, out var xamlType, out var exceptions)) {
 				AppendExceptions(ref transformExceptions, exceptions);
@@ -68,7 +70,7 @@ namespace CommonXaml.Transforms
 				}
 
 				remainder = remainder.TrimStart();
-				IXamlNode value;
+				IXamlNode? value;
 				if (remainder.StartsWith("{", StringComparison.Ordinal)) {
 					value = ExpandMarkup(ref remainder, originalNode);
 					remainder = remainder.TrimStart();
@@ -77,15 +79,18 @@ namespace CommonXaml.Transforms
 						remainder = remainder.Substring(1);
 					else if (remainder.Length > 0 && remainder[0] == '}')
 						remainder = remainder.Substring(1);
-				}
-				else
-					value = new XamlLiteral(GetNextPiece(ref remainder, out _), originalNode.NamespaceResolver, originalNode.SourceUri, originalNode.LineNumber, originalNode.LinePosition);
-				element.TryAdd(new XamlPropertyName("", piece), new List<IXamlNode> { value});
+				} else
+					value = (GetNextPiece(ref remainder, out _) is string literal)
+						? new XamlLiteral(literal, originalNode.NamespaceResolver, originalNode.SourceUri, originalNode.LineNumber, originalNode.LinePosition)
+						: null;
+
+				if (value != null)
+					element.TryAdd(new XamlPropertyName("", piece), new List<IXamlNode> { value});
 			}
 			return element;
 		}
 
-		static bool MatchMarkup(out string match, string expression, out int end)
+		static bool MatchMarkup(out string? match, string expression, out int end)
 		{
 			if (expression.Length < 2) {
 				end = 1;
@@ -131,7 +136,7 @@ namespace CommonXaml.Transforms
 			return true;
 		}
 
-		static string GetNextPiece(ref string remainder, out char next)
+		static string? GetNextPiece(ref string remainder, out char next)
 		{
 			bool inString = false;
 			int end = 0;
@@ -203,14 +208,14 @@ namespace CommonXaml.Transforms
 			return piece.ToString();
 		}
 
-		static void AppendExceptions(ref IList<Exception> exceptions, Exception additionalException)
+		static void AppendExceptions(ref IList<Exception>? exceptions, Exception additionalException)
 		{
 			if (additionalException == null)
 				return;
 			AppendExceptions(ref exceptions, new List<Exception> { additionalException });
 		}
 
-		static void AppendExceptions(ref IList<Exception> exceptions, IList<Exception> additionalExceptions)
+		static void AppendExceptions(ref IList<Exception>? exceptions, IList<Exception>? additionalExceptions)
 		{
 			if (additionalExceptions == null)
 				return;

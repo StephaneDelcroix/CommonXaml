@@ -8,6 +8,5 @@ namespace CommonXaml
 {
 	public interface IXamlValidator : IXamlNodeVisitor
 	{
-		IList<Exception> ValidationErrors { get; }
 	}
 }

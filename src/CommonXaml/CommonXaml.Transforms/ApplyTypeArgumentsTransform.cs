@@ -9,7 +9,7 @@ namespace CommonXaml.Transforms
 	public class ApplyTypeArgumentsTransform : IXamlTransform
 	{
 		public IXamlTransform.TreeVisitingMode VisitingMode => IXamlTransform.TreeVisitingMode.TopDown;
-		public IList<Exception> TransformExceptions { get; private set; }
+		public IList<Exception>? Errors { get; private set; }
 		public bool ShouldSkipChildren(IXamlNode node) => false;
 
 		public void Transform(XamlLiteral node)
@@ -25,7 +25,7 @@ namespace CommonXaml.Transforms
 				return;
 
 			if (!TypeArgumentsParser.TryParseTypeArguments(literal.Literal, literal.NamespaceResolver, (IXamlSourceInfo)literal, out var typeArguments, out var exceptions)) {
-				((List<Exception>)(TransformExceptions ??= new List<Exception>())).AddRange(exceptions);
+				((List<Exception>)(Errors ??= new List<Exception>())).AddRange(exceptions);
 				return;
 			}
 
