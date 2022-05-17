@@ -18,10 +18,10 @@ namespace CommonXaml.Transforms
 
 		public void Transform(XamlElement node)
 		{
-			if (!node.Properties.TryGetValue(new XamlPropertyName(XamlPropertyName.Xaml2009Uri, "TypeArguments"), out var nodes))
+			if (!node.Properties.TryGetValue(new XamlPropertyIdentifier(XamlPropertyIdentifier.Xaml2009Uri, "TypeArguments"), out var nodes))
 				return;
 
-			if (nodes.Count != 1 || !(nodes[0] is XamlLiteral literal))
+			if (nodes.Count != 1 || nodes[0] is not XamlLiteral literal)
 				return;
 
 			if (!TypeArgumentsParser.TryParseTypeArguments(literal.Literal, literal.NamespaceResolver, (IXamlSourceInfo)literal, out var typeArguments, out var exceptions)) {

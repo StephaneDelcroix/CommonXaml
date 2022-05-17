@@ -35,7 +35,8 @@ namespace CommonXaml.ParserTests
 			(true, root!).Transform(new ExpandMarkupExtensionsTransform())
 						 .Transform(new ApplyTypeArgumentsTransform())
 						 .Validate(new XamlVersionValidator(config));
-			var binding = root!.Properties[new XamlPropertyName("", "Text")].First() as XamlElement;
+			Assert.True(root!.TryGetProperty(("", "Text"), out var values));
+			var binding = values.First() as XamlElement;
 			Assert.That(binding!.XamlType, Is.EqualTo(new XamlType("http://commonxaml/controls", "Binding", null)));
 		}
 
@@ -48,10 +49,12 @@ namespace CommonXaml.ParserTests
 			(true, root!).Transform(new ExpandMarkupExtensionsTransform())
 						 .Transform(new ApplyTypeArgumentsTransform())
 						 .Validate(new XamlVersionValidator(config));
-			var binding = root!.Properties[new XamlPropertyName("", "Text")].First() as XamlElement;
+			Assert.True(root!.TryGetProperty(("", "Text"), out var values));
+			var binding = values.First() as XamlElement;
 			Assert.That(binding!.XamlType, Is.EqualTo(new XamlType("http://commonxaml/controls", "Binding", null)));
 			Assert.That(binding.Properties.Count, Is.EqualTo(1));
-			Assert.That(binding.Properties.First().Key, Is.EqualTo(new XamlPropertyName("","Path")));
+			var propName = (binding.Properties.First().Key.NamespaceUri, binding.Properties.First().Key.LocalName);
+			Assert.That(propName, Is.EqualTo(("","Path")));
 			Assert.That((binding.Properties.First().Value.First() as XamlLiteral)!.Literal, Is.EqualTo("Foo"));
 		}
 	}

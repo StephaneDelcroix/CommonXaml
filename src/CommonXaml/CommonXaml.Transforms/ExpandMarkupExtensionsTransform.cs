@@ -65,7 +65,8 @@ namespace CommonXaml.Transforms
 
 			while (GetNextPiece(ref remainder, out var next) is string piece) {
 				if (next != '=') { //implicit content property
-					element.AddOrAppend(XamlPropertyName.ImplicitProperty, new XamlLiteral(piece, originalNode.NamespaceResolver, originalNode.SourceUri, originalNode.LineNumber, originalNode.LinePosition));
+					element.AddOrAppend(XamlPropertyIdentifier.CreateImplicitIdentifier(originalNode.SourceUri, originalNode.LineNumber, originalNode.LinePosition),
+										new XamlLiteral(piece, originalNode.NamespaceResolver, originalNode.SourceUri, originalNode.LineNumber, originalNode.LinePosition));
 					continue;
 				}
 
@@ -85,7 +86,7 @@ namespace CommonXaml.Transforms
 						: null;
 
 				if (value != null)
-					element.TryAdd(new XamlPropertyName("", piece), new List<IXamlNode> { value});
+					element.TryAdd(new XamlPropertyIdentifier("", piece, originalNode.SourceUri, originalNode.LineNumber, originalNode.LinePosition), new List<IXamlNode> { value});
 			}
 			return element;
 		}

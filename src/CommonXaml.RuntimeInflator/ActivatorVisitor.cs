@@ -26,7 +26,7 @@ namespace CommonXaml.RuntimeInflator
 
             if (!Configuration.Resolver.TryResolve(node.XamlType, addError, out var type))
                 return;
-            if (!TryCreateFromX2009LanguagePrimitive(node, type!, addError, out object? value)
+            if (   !TryCreateFromX2009LanguagePrimitive(node, type!, addError, out object? value)
                 && !TryCreateFromFactory(node, type!, addError, out value)
                 && !TryCreateFromParameterizedCtor(node, type!, addError, out value)
                 && !TryCreateFromDefaultCtor(node, type!, addError, out value)) {
@@ -44,10 +44,10 @@ namespace CommonXaml.RuntimeInflator
         {
             value = null;
 
-            if (node.XamlType.NamespaceUri != XamlPropertyName.Xaml2009Uri)
+            if (node.XamlType.NamespaceUri != XamlPropertyIdentifier.Xaml2009Uri)
                 return false;
 
-            if (!node.Properties.TryGetValue(XamlPropertyName.ImplicitProperty, out var properties) || properties.Count == 0) {
+            if (!node.TryGetImplicitProperty(out var properties) || properties.Count == 0) {
                 if (type == typeof(string))
                     value = string.Empty;
                 else if (type == typeof(Uri))
@@ -57,7 +57,7 @@ namespace CommonXaml.RuntimeInflator
                 return true;
             }
 
-            if (!(properties[0] is XamlLiteral literal) || properties.Count > 1)
+            if (properties[0] is not XamlLiteral literal || properties.Count > 1)
                 return false;   //this has been already validated            
 
             if (type == typeof(sbyte) && sbyte.TryParse(literal.Literal, NumberStyles.Number, CultureInfo.InvariantCulture, out var sbyteval))

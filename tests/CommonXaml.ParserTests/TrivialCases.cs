@@ -39,7 +39,7 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode!.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == new XamlPropertyName("", "Title"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Title"));
 			Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "Foo");
 		}
 
@@ -54,11 +54,11 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(2));
 
 			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == new XamlPropertyName("", "Title"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Title"));
 			Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "Foo");
 
 			key = rootNode.Properties.Keys.Skip(1).First();
-			Assert.True(key == new XamlPropertyName("", "Name"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Name"));
 			Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "Bar");
 		}
 
@@ -77,7 +77,7 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == new XamlPropertyName("", "Control.Content"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Control.Content"));
 			Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("", "View"));
 		}
 
@@ -102,15 +102,15 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(3));
 
 			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == new XamlPropertyName("", "Control.Header"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Control.Header"));
 			Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("", "View"));
 
 			key = rootNode.Properties.Keys.Skip(1).First();
-			Assert.True(key == new XamlPropertyName("", "Control.Content"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Control.Content"));
 			Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("", "View"));
 
 			key = rootNode.Properties.Keys.Skip(2).First();
-			Assert.True(key == new XamlPropertyName("", "Control.Footer"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Control.Footer"));
 			Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("", "FooterView"));
 		}
 
@@ -126,8 +126,8 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
-			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == XamlPropertyName.ImplicitProperty);
+			var key = (XamlPropertyIdentifier)rootNode.Properties.Keys.First();
+			Assert.True(key.IsImplicitIdentifier);
 			Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("", "View"));
 		}
 
@@ -149,7 +149,7 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
 			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == new XamlPropertyName("", "Control.Content"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Control.Content"));
 			Assert.True(rootNode.Properties[key].Count == 3);
 			Assert.True(((XamlElement)rootNode.Properties[key].Skip(0).First()).XamlType == new XamlType("", "View"));
 			Assert.True(((XamlElement)rootNode.Properties[key].Skip(1).First()).XamlType == new XamlType("", "OtherView"));
@@ -170,8 +170,8 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("", "Control", null)));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(1));
 
-			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == XamlPropertyName.ImplicitProperty);
+			var key = (XamlPropertyIdentifier)rootNode.Properties.Keys.First();
+			Assert.True(key.IsImplicitIdentifier);
 			Assert.True(rootNode.Properties[key].Count == 3);
 			Assert.True(((XamlElement)rootNode.Properties[key].Skip(0).First()).XamlType == new XamlType("", "View"));
 			Assert.True(((XamlElement)rootNode.Properties[key].Skip(1).First()).XamlType == new XamlType("", "OtherView"));
@@ -212,25 +212,26 @@ namespace CommonXaml.ParserTests
 			Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("http://commonxaml/controls", "Control", null)));
 			Assert.That(rootNode.Properties.Count, Is.EqualTo(5));
 
-
 			var key = rootNode.Properties.Keys.First();
-			Assert.True(key == new XamlPropertyName("http://www.w3.org/2000/xmlns/", "xmlns"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("http://www.w3.org/2000/xmlns/", "xmlns"));
+
 			Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "http://commonxaml/controls");
 
 			key = rootNode.Properties.Keys.Skip(1).First();
-			Assert.True(key == new XamlPropertyName("http://www.w3.org/2000/xmlns/", "x"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("http://www.w3.org/2000/xmlns/", "x"));
 			Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "http://schemas.microsoft.com/winfx/2009/xaml");
 
 			key = rootNode.Properties.Keys.Skip(2).First();
-			Assert.True(key == new XamlPropertyName("http://schemas.microsoft.com/winfx/2009/xaml", "Class"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("http://schemas.microsoft.com/winfx/2009/xaml", "Class"));
+
 			Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "FooBar");
 
 			key = rootNode.Properties.Keys.Skip(3).First();
-			Assert.True(key == new XamlPropertyName("", "Title"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("", "Title"));
 			Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "ControlTitle");
 
 			key = rootNode.Properties.Keys.Skip(4).First();
-			Assert.True(key == new XamlPropertyName("http://commonxaml/controls", "Control.Content"));
+			Assert.True((key.NamespaceUri, key.LocalName) == ("http://commonxaml/controls", "Control.Content"));
 			Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("http://commonxaml/controls", "View"));
 		}
 	}

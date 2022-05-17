@@ -24,14 +24,14 @@ namespace CommonXaml.Validators
 		public void Visit(XamlElement node)
 		{
 			foreach (var propertyName in node.Properties.Keys) {
-				if (   propertyName.NamespaceUri == XamlPropertyName.Xaml2006Uri
+				if (   propertyName.NamespaceUri == XamlPropertyIdentifier.Xaml2006Uri
 					&& propertyName.LocalName != "Key"
 					&& propertyName.LocalName != "Name"
 					&& propertyName.LocalName != "Class"
 					&& propertyName.LocalName != "FieldModifier")
 					AddError(new XamlParseException(CXAML1000, new[] { propertyName.LocalName, propertyName.NamespaceUri }, (IXamlSourceInfo)propertyName));
 
-				if (propertyName.NamespaceUri == XamlPropertyName.Xaml2009Uri) {
+				if (propertyName.NamespaceUri == XamlPropertyIdentifier.Xaml2009Uri) {
 					if ((int)Config.MinSupportedXamlVersion < (int)XamlVersion.Xaml2009)
 						AddError(new XamlParseException(CXAML1002, null, (IXamlSourceInfo)propertyName));
 					else if (  propertyName.LocalName != "Key"
@@ -45,8 +45,8 @@ namespace CommonXaml.Validators
 						AddError(new XamlParseException(CXAML1000, new[] { propertyName.LocalName, propertyName.NamespaceUri }, (IXamlSourceInfo)propertyName));
 				}
 
-				if (   (   propertyName.NamespaceUri == XamlPropertyName.Xaml2006Uri
-						|| propertyName.NamespaceUri == XamlPropertyName.Xaml2009Uri)
+				if (   (   propertyName.NamespaceUri == XamlPropertyIdentifier.Xaml2006Uri
+						|| propertyName.NamespaceUri == XamlPropertyIdentifier.Xaml2009Uri)
 					&& (   propertyName.LocalName == "Key"
 						|| propertyName.LocalName == "Name"
 						|| propertyName.LocalName == "Class"

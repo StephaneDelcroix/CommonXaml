@@ -21,8 +21,8 @@ namespace CommonXaml
 
 		public XamlType XamlType { get; internal set; }
 
-		internal readonly Dictionary<IXamlPropertyName, IList<IXamlNode>> properties = new Dictionary<IXamlPropertyName, IList<IXamlNode>>();
-		public IReadOnlyDictionary<IXamlPropertyName, IList<IXamlNode>> Properties => properties;
+		internal readonly Dictionary<IXamlPropertyIdentifier, IList<IXamlNode>> properties = new Dictionary<IXamlPropertyIdentifier, IList<IXamlNode>>();
+		public IReadOnlyDictionary<IXamlPropertyIdentifier, IList<IXamlNode>> Properties => properties;
 
 		public XamlElement? Parent { get; internal set; }
 
@@ -31,10 +31,10 @@ namespace CommonXaml
 		public int LineNumber { get; }
 		public int LinePosition { get; }
 		public Uri? SourceUri { get; }
-
-		public bool HasSourceInfo() => LineNumber >= 0 && LinePosition >= 0 && SourceUri != null;
-
-		internal bool TryAdd(IXamlPropertyName propertyName, IList<IXamlNode> propertyValues)
+#if !NETSTANDARD2_1_OR_GREATER
+        public bool HasSourceInfo() => LineNumber >= 0 && LinePosition >= 0 && SourceUri != null;
+#endif
+        internal bool TryAdd(IXamlPropertyIdentifier propertyName, IList<IXamlNode> propertyValues)
 		{
 			foreach (var node in propertyValues)
 				node.SetParent(this);
@@ -45,11 +45,11 @@ namespace CommonXaml
 			return true;
 		}
 
-		internal void AddOrAppend(IXamlPropertyName propertyName, IXamlNode propertyValue)
+		internal void AddOrAppend(IXamlPropertyIdentifier propertyName, IXamlNode propertyValue)
 		{
 			if (Properties.TryGetValue(propertyName, out var values) && values.Count == 1 && values[0] is XamlLiteral literal && propertyValue is XamlLiteral literalValue)
 				literal.Literal += literalValue;
-			else if (Properties.TryGetValue(XamlPropertyName.ImplicitProperty, out values))
+			else if (TryGetImplicitProperty(out values))
 				values.Add(propertyValue);
 			else
 				TryAdd(propertyName, new List<IXamlNode> { propertyValue });
@@ -66,5 +66,19 @@ namespace CommonXaml
 			}
 		}
 
+        class xprop : IXamlPropertyIdentifier
+        {
+            public xprop((string namespaceUri, string localName)prop)
+            {
+				NamespaceUri = prop.namespaceUri;
+				LocalName = prop.localName;
+            }
+            public string NamespaceUri { get; }
+            public string LocalName { get; }
+			public override int GetHashCode() => (NamespaceUri, LocalName).GetHashCode();
+		}
+
+		public bool TryGetProperty((string namespaceUri, string localName) prop, out IList<IXamlNode> value) => Properties.TryGetValue(new xprop(prop), out value);
+		public bool TryGetImplicitProperty(out IList<IXamlNode> value) => TryGetProperty(("http://commonxaml/internals", "ImplicitContent"),out value);
 	}
 }

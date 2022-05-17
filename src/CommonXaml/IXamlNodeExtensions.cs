@@ -9,8 +9,10 @@ namespace CommonXaml
 	{
 		internal static void SetParent(this IXamlNode node, XamlElement parent)
 		{
-			if (node is XamlElement element) element.Parent = parent;
-			else if (node is XamlLiteral literal) literal.Parent = parent;
+			if (node is XamlElement element)
+				element.Parent = parent;
+			else if (node is XamlLiteral literal)
+				literal.Parent = parent;
 			else throw new NotImplementedException();
 		}
 

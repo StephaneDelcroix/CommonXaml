@@ -3,7 +3,7 @@
 
 namespace CommonXaml
 {
-	public interface IXamlPropertyName
+	public interface IXamlPropertyIdentifier
 	{
 		public string NamespaceUri { get; }
 		public string LocalName { get; }

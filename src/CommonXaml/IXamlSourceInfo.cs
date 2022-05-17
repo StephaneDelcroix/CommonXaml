@@ -10,6 +10,10 @@ namespace CommonXaml
 		int LineNumber { get; }
 		int LinePosition { get; }
 		Uri? SourceUri { get; }
-		public bool HasSourceInfo();
+#if NETSTANDARD2_1_OR_GREATER
+        public bool HasSourceInfo() => LineNumber >= 0 && LinePosition >= 0 && SourceUri != null;
+#else
+		bool HasSourceInfo();
+#endif
 	}
 }

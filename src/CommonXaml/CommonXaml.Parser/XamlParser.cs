@@ -138,12 +138,13 @@ namespace CommonXaml.Parser
 					break;
 				case XmlNodeType.Text:
 				case XmlNodeType.CDATA:
-					element.AddOrAppend(XamlPropertyName.ImplicitProperty, new XamlLiteral(reader.Value.Trim(), new XamlNamespaceResolver((IXmlNamespaceResolver)reader), Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition));
+					element.AddOrAppend(XamlPropertyIdentifier.CreateImplicitIdentifier(Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition),
+										new XamlLiteral(reader.Value.Trim(), new XamlNamespaceResolver((IXmlNamespaceResolver)reader), Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition));
 					break;
 				case XmlNodeType.Element:
-					IXamlPropertyName propertyName;
+					IXamlPropertyIdentifier propertyName;
 					if (   reader.Name.Contains(".")
-						|| (reader.NamespaceURI == XamlPropertyName.Xaml2009Uri && reader.LocalName == "Arguments")) {
+						|| (reader.NamespaceURI == XamlPropertyIdentifier.Xaml2009Uri && reader.LocalName == "Arguments")) {
 						propertyName = new XamlPropertyIdentifier(!string.IsNullOrEmpty(reader.NamespaceURI) ? reader.NamespaceURI : elementNsUri, reader.LocalName, Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition);
 
 						if (reader.IsEmptyElement) {
@@ -154,7 +155,7 @@ namespace CommonXaml.Parser
 						reader.Read(); //Consume the property opening tag. The closing tag will be used as a return indicator in TryParseElements
 					}
 					else
-						propertyName = XamlPropertyName.ImplicitProperty;
+						propertyName = XamlPropertyIdentifier.CreateImplicitIdentifier(Config.SourceUri, ((IXmlLineInfo)reader).LineNumber, ((IXmlLineInfo)reader).LinePosition);
 
 
 					if (!TryParseElements(reader, out var valueNodes, out var elementExceptions)) {

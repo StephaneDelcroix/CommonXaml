@@ -20,7 +20,7 @@ namespace CommonXaml
 			TopDown,
 			BottomUp,
 		}
-	}
+    }
 
 	public static class VisitorExtensions
 	{
