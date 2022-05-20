@@ -217,29 +217,29 @@ public class TrivialCases
 		Assert.That(success, Is.True);
 
 		var rootNode = root as XamlElement;
-		Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("http://commonxaml/controls", "Control", null)));
-		Assert.That(rootNode.Properties.Count, Is.EqualTo(5));
+        Assert.That(rootNode!.XamlType, Is.EqualTo(new XamlType("http://commonxaml/controls", "Control", null)));
+        Assert.That(rootNode.Properties.Count, Is.EqualTo(5));
 
-		var key = rootNode.Properties.Keys.First();
-		Assert.True((key.NamespaceUri, key.LocalName) == ("http://www.w3.org/2000/xmlns/", "xmlns"));
+        var key = rootNode.Properties.Keys.First();
+        Assert.True((key.NamespaceUri, key.LocalName) == ("http://www.w3.org/2000/xmlns/", "xmlns"));
 
-		Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "http://commonxaml/controls");
+        Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "http://commonxaml/controls");
 
-		key = rootNode.Properties.Keys.Skip(1).First();
-		Assert.True((key.NamespaceUri, key.LocalName) == ("http://www.w3.org/2000/xmlns/", "x"));
-		Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "http://schemas.microsoft.com/winfx/2009/xaml");
+        key = rootNode.Properties.Keys.Skip(1).First();
+        Assert.True((key.NamespaceUri, key.LocalName) == ("http://www.w3.org/2000/xmlns/", "x"));
+        Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "http://schemas.microsoft.com/winfx/2009/xaml");
 
-		key = rootNode.Properties.Keys.Skip(2).First();
-		Assert.True((key.NamespaceUri, key.LocalName) == ("http://schemas.microsoft.com/winfx/2009/xaml", "Class"));
+        key = rootNode.Properties.Keys.Skip(2).First();
+        Assert.True((key.NamespaceUri, key.LocalName) == ("http://schemas.microsoft.com/winfx/2009/xaml", "Class"));
 
-		Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "FooBar");
+        Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "FooBar");
 
-		key = rootNode.Properties.Keys.Skip(3).First();
-		Assert.True((key.NamespaceUri, key.LocalName) == ("", "Title"));
-		Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "ControlTitle");
+        key = rootNode.Properties.Keys.Skip(3).First();
+        Assert.True((key.NamespaceUri, key.LocalName) == ("", "Title"));
+        Assert.True(((XamlLiteral)rootNode.Properties[key].Single()).Literal == "ControlTitle");
 
-		key = rootNode.Properties.Keys.Skip(4).First();
-		Assert.True((key.NamespaceUri, key.LocalName) == ("http://commonxaml/controls", "Control.Content"));
-		Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("http://commonxaml/controls", "View"));
+        key = rootNode.Properties.Keys.Skip(4).First();
+        Assert.True((key.NamespaceUri, key.LocalName) == ("http://commonxaml/controls", "Control.Content"));
+        Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("http://commonxaml/controls", "View"));
 	}
 }

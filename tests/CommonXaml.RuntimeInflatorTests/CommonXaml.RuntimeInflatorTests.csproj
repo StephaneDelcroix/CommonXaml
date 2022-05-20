@@ -6,8 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.13.3" />
     <ProjectReference Include="..\..\src\CommonXaml\CommonXaml.csproj" />
     <ProjectReference Include="..\..\src\CommonXaml.RuntimeInflator\CommonXaml.RuntimeInflator.csproj" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
   </ItemGroup>
 </Project>

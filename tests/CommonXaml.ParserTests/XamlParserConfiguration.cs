@@ -20,6 +20,6 @@ namespace CommonXaml.ParserTests
 		public XamlVersion MinSupportedXamlVersion { get; }
 
 		public bool ContinueOnError { get; } = false;
-        public ILogger Logger => throw new NotImplementedException();
+		public ILogger? Logger => null;
     }
 }
