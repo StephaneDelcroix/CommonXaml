@@ -3,12 +3,10 @@
 
 using System;
 
-namespace CommonXaml.RuntimeInflator
-{
-    public interface IRuntimeInflatorConfiguration
-    {
-        IXamlTypeResolver Resolver { get; }
+namespace CommonXaml.RuntimeInflator;
 
-        Action<XamlElement, object>? OnActivatedCallback { get; } 
-    }
+public interface IRuntimeInflatorConfiguration : IXamlNodeVisitorConfiguration
+{
+    IXamlTypeResolver Resolver { get; }
+    Action<IXamlElement, object>? OnActivatedCallback { get; } 
 }

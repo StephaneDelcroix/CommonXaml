@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace CommonXaml.Validators
+namespace CommonXaml.Validators;
+
+public enum XamlVersion
 {
-	public enum XamlVersion
-	{
-		Xaml2006 = 0,
-		Xaml2009
-	}
+	Xaml2006 = 0,
+	Xaml2009
 }

@@ -1,12 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
+namespace CommonXaml;
 
-namespace CommonXaml
+public interface IXamlValidator<TConfig> : IXamlNodeVisitor<TConfig> where TConfig : IXamlNodeVisitorConfiguration
 {
-	public interface IXamlValidator : IXamlNodeVisitor
-	{
-	}
 }

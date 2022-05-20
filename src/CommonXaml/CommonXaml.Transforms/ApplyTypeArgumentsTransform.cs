@@ -4,32 +4,33 @@
 using System;
 using System.Collections.Generic;
 
-namespace CommonXaml.Transforms
+namespace CommonXaml.Transforms;
+
+public class ApplyTypeArgumentsTransform : IXamlTransform<IXamlTransformConfiguration>
 {
-	public class ApplyTypeArgumentsTransform : IXamlTransform
+	public ApplyTypeArgumentsTransform(IXamlTransformConfiguration config)
+		=> Config = config;
+
+	public TreeVisitingMode VisitingMode => TreeVisitingMode.TopDown;
+	public IXamlTransformConfiguration Config { get; }
+
+	public bool ShouldSkipChildren(IXamlNode node) => false;
+
+	public bool Transform(XamlLiteral node) => true;
+
+	public bool Transform(XamlElement node)
 	{
-		public IXamlTransform.TreeVisitingMode VisitingMode => IXamlTransform.TreeVisitingMode.TopDown;
-		public IList<Exception>? Errors { get; private set; }
-		public bool ShouldSkipChildren(IXamlNode node) => false;
+		if (!node.Properties.TryGetValue(new XamlPropertyIdentifier(XamlPropertyIdentifier.Xaml2009Uri, "TypeArguments"), out var nodes))
+			return true;
 
-		public void Transform(XamlLiteral node)
-		{
+		if (nodes.Count != 1 || nodes[0] is not XamlLiteral literal)
+			return true;
+
+		if (!TypeArgumentsParser.TryParseTypeArguments(literal.Literal, literal.NamespaceResolver, (IXamlSourceInfo)literal, out var typeArguments, Config.Logger)) {
+			return false;
 		}
 
-		public void Transform(XamlElement node)
-		{
-			if (!node.Properties.TryGetValue(new XamlPropertyIdentifier(XamlPropertyIdentifier.Xaml2009Uri, "TypeArguments"), out var nodes))
-				return;
-
-			if (nodes.Count != 1 || nodes[0] is not XamlLiteral literal)
-				return;
-
-			if (!TypeArgumentsParser.TryParseTypeArguments(literal.Literal, literal.NamespaceResolver, (IXamlSourceInfo)literal, out var typeArguments, out var exceptions)) {
-				((List<Exception>)(Errors ??= new List<Exception>())).AddRange(exceptions);
-				return;
-			}
-
-			node.XamlType = new XamlType(node.XamlType.NamespaceUri, node.XamlType.Name, (List<XamlType>)typeArguments);
-		}
+		node.XamlType = new XamlType(node.XamlType.NamespaceUri, node.XamlType.Name, (List<XamlType>)typeArguments);
+		return true;
 	}
 }

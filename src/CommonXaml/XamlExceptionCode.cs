@@ -1,33 +1,33 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace CommonXaml
+using Microsoft.Extensions.Logging;
+
+namespace CommonXaml;
+
+public struct XamlExceptionCode
 {
-	public struct XamlExceptionCode
+	//x2006 and x2009 validations
+	public static XamlExceptionCode CXAML1000 = new(nameof(CXAML1000), "Unknown property '{0}' in xmlns '{1}'.", "");
+	public static XamlExceptionCode CXAML1001 = new(nameof(CXAML1001), "String literal expected for property '{0}'.", "");
+	public static XamlExceptionCode CXAML1002 = new(nameof(CXAML1002), "Unsupported Xaml version.", "");
+
+	//xaml errors
+	public static XamlExceptionCode CXAML1010 = new(nameof(CXAML1010), "Duplicate property name '{0}'.", "");
+	public static XamlExceptionCode CXAML1011 = new(nameof(CXAML1011), "Unexpected empty element '<{0} />'.", "");
+	public static XamlExceptionCode CXAML1012 = new(nameof(CXAML1012), "No xmlns declaration for prefix '{0}'.", "");
+
+	//xaml markup
+	public static XamlExceptionCode CXAML1020 = new(nameof(CXAML1020), "Markup expression must end with '}'.", "");
+
+	public string ErrorCode { get; }
+	public string ErrorMessage { get; }
+	public string ErrorLink { get; }
+
+	XamlExceptionCode(string errorCode, string errorMessage, string errorLink)
 	{
-		//x2006 and x2009 validations
-		public static XamlExceptionCode CXAML1000 = new XamlExceptionCode(nameof(CXAML1000), "Unknown property '{0}' in xmlns '{1}'.", "");
-		public static XamlExceptionCode CXAML1001 = new XamlExceptionCode(nameof(CXAML1001), "String literal expected for property '{0}'.", "");
-		public static XamlExceptionCode CXAML1002 = new XamlExceptionCode(nameof(CXAML1002), "Unsupported Xaml version.", "");
-
-		//xaml errors
-		public static XamlExceptionCode CXAML1010 = new XamlExceptionCode(nameof(CXAML1010), "Duplicate property name '{0}'.", "");
-		public static XamlExceptionCode CXAML1011 = new XamlExceptionCode(nameof(CXAML1011), "Unexpected empty element '<{0} />'.", "");
-		public static XamlExceptionCode CXAML1012 = new XamlExceptionCode(nameof(CXAML1012), "No xmlns declaration for prefix '{0}'.", "");
-
-		//xaml markup
-		public static XamlExceptionCode CXAML1020 = new XamlExceptionCode(nameof(CXAML1020), "Markup expression must end with '}'.", "");
-
-
-		public string ErrorCode { get; }
-		public string ErrorMessage { get; }
-		public string ErrorLink { get; }
-
-		XamlExceptionCode(string errorCode, string errorMessage, string errorLink)
-		{
-			ErrorCode = errorCode;
-			ErrorMessage = errorMessage;
-			ErrorLink = errorLink;
-		}
+		ErrorCode = errorCode;
+		ErrorMessage = errorMessage;
+		ErrorLink = errorLink;
 	}
 }

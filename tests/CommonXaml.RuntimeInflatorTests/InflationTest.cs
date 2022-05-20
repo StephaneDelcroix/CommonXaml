@@ -28,7 +28,7 @@ namespace CommonXaml.RuntimeInflatorTests
 </Control>";
 
 		XamlParser? parser;
-		XamlParserConfiguration config = new XamlParserConfiguration(new Uri("test.xaml", UriKind.RelativeOrAbsolute), XamlVersion.Xaml2009);
+        readonly XamlParserConfiguration config = new XamlParserConfiguration(new Uri("test.xaml", UriKind.RelativeOrAbsolute), XamlVersion.Xaml2009);
 
         [SetUp]
         public void Setup() => parser = new XamlParser(config);
@@ -38,13 +38,12 @@ namespace CommonXaml.RuntimeInflatorTests
         [Test()]
         public void TestCase()
         {
-            using var textreader = new StringReader(xaml);
-            using var xmlreader = XmlReader.Create(textreader);
-            Assert.That(parser!.TryProcess(xmlreader, out var root, out _), Is.True);
-            (true, root!).Transform(new ExpandMarkupExtensionsTransform())
-                         .Transform(new ApplyTypeArgumentsTransform())
-                         .Validate(new XamlVersionValidator(config))
-						 .Visit(new ActivatorVisitor(config));
+            var continuation = parser!.Parse(xaml);
+            Assert.That(continuation.success, Is.True);
+            continuation.Transform(new ExpandMarkupExtensionsTransform(config))
+                        .Transform(new ApplyTypeArgumentsTransform(config))
+                        .Validate(new XamlVersionValidator(config))
+                        .Visit(new ActivatorVisitor(config));
         }
     }
 }

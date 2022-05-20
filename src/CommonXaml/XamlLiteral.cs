@@ -4,30 +4,32 @@
 using System;
 using System.Diagnostics;
 
-namespace CommonXaml
+namespace CommonXaml;
+
+[DebuggerDisplay("{Literal}")]
+public class XamlLiteral : IXamlLiteral
 {
-	[DebuggerDisplay("{Literal}")]
-	public class XamlLiteral : IXamlNode
+	public XamlLiteral(string literal, IXamlNamespaceResolver namespaceResolver, Uri? sourceUri, int lineNumber = -1, int linePosition = -1)
 	{
-		public XamlLiteral(string literal, IXamlNamespaceResolver namespaceResolver, Uri? sourceUri, int lineNumber = -1, int linePosition = -1)
-		{
-			Literal = literal;
-			NamespaceResolver = namespaceResolver;
-			SourceUri = sourceUri;
-			LineNumber = lineNumber;
-			LinePosition = linePosition;
-		}
-
-		public string Literal { get; internal set; }
-
-		public XamlElement? Parent { get; internal set; }
-		public IXamlNamespaceResolver NamespaceResolver { get; }
-
-		public int LineNumber { get; }
-		public int LinePosition { get; }
-		public Uri? SourceUri { get; }
-#if !NETSTANDARD2_1_OR_GREATER
-		public bool HasSourceInfo() => LineNumber >= 0 && LinePosition >= 0 && SourceUri != null;
-#endif
+		Literal = literal;
+		NamespaceResolver = namespaceResolver;
+		SourceUri = sourceUri;
+		LineNumber = lineNumber;
+		LinePosition = linePosition;
 	}
+
+	public string Literal { get; set; }
+
+	public IXamlElement? Parent { get; set; }
+	public IXamlNamespaceResolver NamespaceResolver { get; }
+
+	public int LineNumber { get; }
+	public int LinePosition { get; }
+	public Uri? SourceUri { get; }
+
+	/// <summary>
+	/// Returns a read-only ReadOnlyXamlLiteral wrapper for the current XamlLiteral
+	/// </summary>
+	/// <returns></returns>
+	public ReadOnlyXamlLiteral AsReadOnly() => new(this);
 }

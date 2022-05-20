@@ -2,53 +2,51 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
 
-namespace CommonXaml
+namespace CommonXaml;
+
+public interface IXamlNodeVisitor<TConfig> where TConfig : IXamlNodeVisitorConfiguration
 {
-	public interface IXamlNodeVisitor
-	{
 		TreeVisitingMode VisitingMode  { get; }
-		public bool ShouldSkipChildren(IXamlNode node);
-		IList<Exception>? Errors { get; }
+		public bool ShouldSkipChildren(IXamlNode node);		
 
-		void Visit(XamlLiteral node);
-		void Visit(XamlElement node);
+		bool Visit(IXamlLiteral node);
+		bool Visit(IXamlElement node);
 
-		public enum TreeVisitingMode
-		{
-			TopDown,
-			BottomUp,
-		}
-    }
+    TConfig Config { get; }
+}
 
-	public static class VisitorExtensions
+public static class VisitorExtensions
+{
+	public static bool Accept<TConfig>(this IXamlNode self, IXamlNodeVisitor<TConfig> visitor) where TConfig : IXamlNodeVisitorConfiguration
 	{
-		public static void Accept(this IXamlNode self, IXamlNodeVisitor visitor)
-		{
-			if (self is XamlLiteral literal)
-				literal.Accept(visitor);
-			else if (self is XamlElement element)
-				element.Accept(visitor);
-			else
-				throw new NotImplementedException();
+		if (self is IXamlLiteral literal)
+			return literal.Accept(visitor);
+		else if (self is IXamlElement element)
+			return element.Accept(visitor);
+		else
+			throw new NotImplementedException();
+	}
+
+	public static bool Accept<TConfig>(this IXamlLiteral self, IXamlNodeVisitor<TConfig> visitor) where TConfig : IXamlNodeVisitorConfiguration
+		=> visitor.Visit(self);
+
+	public static bool Accept<TConfig>(this IXamlElement self, IXamlNodeVisitor<TConfig> visitor) where TConfig : IXamlNodeVisitorConfiguration
+	{
+		var success = true;
+		if (visitor.VisitingMode == TreeVisitingMode.TopDown && (success || visitor.Config.ContinueOnError))
+			success &= visitor.Visit(self);
+
+		if (!visitor.ShouldSkipChildren(self)) {
+			foreach (var nodelist in self.Properties.Values)
+				foreach (var node in nodelist)
+					if (success || visitor.Config.ContinueOnError)
+						success &= node.Accept(visitor);
 		}
 
-		public static void Accept(this XamlLiteral self, IXamlNodeVisitor visitor) => visitor.Visit(self);
+		if (visitor.VisitingMode == TreeVisitingMode.BottomUp && (success || visitor.Config.ContinueOnError))
+			success &= visitor.Visit(self);
 
-		public static void Accept(this XamlElement self, IXamlNodeVisitor visitor)
-		{
-			if (visitor.VisitingMode == IXamlNodeVisitor.TreeVisitingMode.TopDown)
-				visitor.Visit(self);
-
-			if (!visitor.ShouldSkipChildren(self)) {
-				foreach (var nodelist in self.Properties.Values)
-					foreach (var node in nodelist)
-						node.Accept(visitor);
-			}
-
-			if (visitor.VisitingMode == IXamlNodeVisitor.TreeVisitingMode.BottomUp)
-				visitor.Visit(self);
-		}
+		return success;
 	}
 }

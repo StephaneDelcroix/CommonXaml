@@ -5,23 +5,26 @@ using System;
 using CommonXaml.Parser;
 using CommonXaml.RuntimeInflator;
 using CommonXaml.Validators;
+using Microsoft.Extensions.Logging;
 
 namespace CommonXaml.RuntimeInflatorTests
 {
-    class XamlParserConfiguration : IXamlParserConfiguration, IXamlVersionValidationConfiguration, IRuntimeInflatorConfiguration
+    class XamlParserConfiguration : IXamlParserConfiguration, IXamlVersionValidationConfiguration, IRuntimeInflatorConfiguration, IXamlTransformConfiguration
     {
-        public XamlParserConfiguration(Uri uri, XamlVersion xaml2009)
+        public XamlParserConfiguration(Uri uri, XamlVersion minSupportedXamlVersion)
         {
             SourceUri = uri;
-            MinSupportedXamlVersion = xaml2009;
+            MinSupportedXamlVersion = minSupportedXamlVersion;
         }
 
         public Uri SourceUri { get; set; }
         public XamlVersion MinSupportedXamlVersion { get; set; }
 
-        public bool ContinueOnError { get; set; } = false;
         public IXamlTypeResolver Resolver { get; } = new MockTypeSystem();
 
-        public Action<XamlElement, object>? OnActivatedCallback => null;
+        public Action<IXamlElement, object>? OnActivatedCallback => null;
+
+        public bool ContinueOnError { get; set; } = false;
+        public ILogger? Logger => null;
     }
 }

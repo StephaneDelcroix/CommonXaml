@@ -1,9 +1,9 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 
-namespace CommonXaml.RuntimeInflator
+namespace CommonXaml.RuntimeInflator;
+
+public interface IXamlTypeResolver
 {
-    public interface IXamlTypeResolver
-    {
-        bool TryResolve(XamlType xamlType, Action<Exception> errorHandler, out Type? type);        
-    }
+    bool TryResolve(XamlType xamlType, ILogger? logger, out Type? type);        
 }

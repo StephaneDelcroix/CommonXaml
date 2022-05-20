@@ -2,12 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
+    <LangVersion>10.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.12.0" />
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.3" />
     <ProjectReference Include="..\..\src\CommonXaml\CommonXaml.csproj" />
     <ProjectReference Include="..\..\src\CommonXaml.RuntimeInflator\CommonXaml.RuntimeInflator.csproj" />
   </ItemGroup>

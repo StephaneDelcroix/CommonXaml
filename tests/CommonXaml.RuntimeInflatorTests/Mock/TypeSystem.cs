@@ -3,12 +3,13 @@
 
 using System;
 using CommonXaml.RuntimeInflator;
+using Microsoft.Extensions.Logging;
 
 namespace CommonXaml.RuntimeInflatorTests
 {
     public class MockTypeSystem : IXamlTypeResolver
     {
-        public bool TryResolve(XamlType xamlType, Action<Exception> errorHandler, out Type? type)
+        public bool TryResolve(XamlType xamlType, ILogger? logger, out Type? type)
         {
             type = Resolve(xamlType);
             return false;

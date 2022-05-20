@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-namespace CommonXaml
+namespace CommonXaml;
+
+public interface IXamlNamespaceResolver
 {
-	public interface IXamlNamespaceResolver
-	{
-		string LookupNamespace(string prefix);
-		string LookupPrefix(string namespaceName);
-	}
+	string LookupNamespace(string prefix);
+	string LookupPrefix(string namespaceName);
 }

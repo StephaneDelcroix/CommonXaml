@@ -2,54 +2,52 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace CommonXaml
+namespace CommonXaml;
+
+public interface IXamlTransform<TConfig> where TConfig : IXamlTransformConfiguration
 {
-	public interface IXamlTransform
+	TreeVisitingMode VisitingMode { get; }
+	public bool ShouldSkipChildren(IXamlNode node);
+
+	bool Transform(XamlLiteral node);
+	bool Transform(XamlElement node);
+
+	TConfig Config { get; }
+}
+
+public static class TransformExtensions
+{
+	public static bool Accept<TConfig>(this IXamlNode self, IXamlTransform<TConfig> transform) where TConfig : IXamlTransformConfiguration
 	{
-		TreeVisitingMode VisitingMode { get; }
-		IList<Exception>? Errors { get; }
-
-		public bool ShouldSkipChildren(IXamlNode node);
-		void Transform(XamlLiteral node);
-		void Transform(XamlElement node);
-
-		public enum TreeVisitingMode
-		{
-			TopDown,
-			BottomUp,
-		}
+		if (self is XamlLiteral literal)
+			return literal.Accept(transform);
+		else if (self is XamlElement element)
+			return element.Accept(transform);
+		else
+			throw new NotImplementedException();
 	}
 
-	public static class TransformExtensions
+	static bool Accept<TConfig>(this XamlLiteral self, IXamlTransform<TConfig> transform) where TConfig : IXamlTransformConfiguration
+		=> transform.Transform(self);
+
+	static bool Accept<TConfig>(this XamlElement self, IXamlTransform<TConfig> transform) where TConfig : IXamlTransformConfiguration
 	{
-		public static void Accept(this IXamlNode self, IXamlTransform visitor)
-		{
-			if (self is XamlLiteral literal)
-				literal.Accept(visitor);
-			else if (self is XamlElement element)
-				element.Accept(visitor);
-			else
-				throw new NotImplementedException();
+		var success = true;
+		if (transform.VisitingMode == TreeVisitingMode.TopDown && (success || transform.Config.ContinueOnError))
+			success &= transform.Transform(self);
+
+		if (!transform.ShouldSkipChildren(self)) {
+			foreach (var nodelist in self.Properties.Values)
+				foreach (var node in nodelist.ToList())
+					if (success || transform.Config.ContinueOnError)
+						success &= node.Accept(transform);
 		}
 
-		static void Accept(this XamlLiteral self, IXamlTransform transform) => transform.Transform(self);
+		if (transform.VisitingMode == TreeVisitingMode.BottomUp && (success || transform.Config.ContinueOnError))
+			success &= transform.Transform(self);
 
-		static void Accept(this XamlElement self, IXamlTransform transform)
-		{
-			if (transform.VisitingMode == IXamlTransform.TreeVisitingMode.TopDown)
-				transform.Transform(self);
-
-			if (!transform.ShouldSkipChildren(self)) {
-				foreach (var nodelist in self.Properties.Values)
-					foreach (var node in nodelist.ToList())
-						node.Accept(transform);
-			}
-
-			if (transform.VisitingMode == IXamlTransform.TreeVisitingMode.BottomUp)
-				transform.Transform(self);
-		}
+		return success;
 	}
 }
