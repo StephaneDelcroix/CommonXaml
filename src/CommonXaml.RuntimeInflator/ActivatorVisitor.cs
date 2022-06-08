@@ -1,33 +1,46 @@
 ﻿// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.using CommonXaml.Transforms;
+// Licensed under the MIT License
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
 using Microsoft.Extensions.Logging;
 
 namespace CommonXaml.RuntimeInflator;
 
-public class ActivatorVisitor : IXamlNodeVisitor<IRuntimeInflatorConfiguration>
+public class ActivatorVisitor : IXamlNodeVisitor<IRuntimeInflatorConfiguration, IActivatorContext>
 {
-    public ActivatorVisitor(IRuntimeInflatorConfiguration config) => Config = config;
+    public ActivatorVisitor(IRuntimeInflatorConfiguration config, IActivatorContext context, object? root=null)
+    {
+        Config = config;
+        Context = context;
+        Root = root;
+    }
+
     public TreeVisitingMode VisitingMode => TreeVisitingMode.BottomUp;
     public IRuntimeInflatorConfiguration Config { get; }
-    public bool ShouldSkipChildren(IXamlNode node) => false;
+    public IActivatorContext Context { get; }
+    object? Root { get; }
 
-    public Dictionary<IXamlNode, object> Values { get; } = new Dictionary<IXamlNode, object>();
+    public bool ShouldSkipChildren(IXamlNode node) => false;
 
     public bool Visit(IXamlLiteral node)
     {
-        Values[node] = node.Literal;
+        Context.Values[node] = node.Literal;
         return true;
     }
 
     public bool Visit(IXamlElement node)
     {
+        //if the root object is provided, do not instanciate it
+        if (node.Parent is null && Root is not null) {
+            Context.Values[node] = Root;
+            return true;
+        }
+
         if (!Config.Resolver.TryResolve(node.XamlType, Config.Logger, out var type))
             return false;
+
         if (   !TryCreateFromX2009LanguagePrimitive(node, type!, Config.Logger, out object? value)
             && !TryCreateFromFactory(node, type!, Config.Logger, out value)
             && !TryCreateFromParameterizedCtor(node, type!, Config.Logger, out value)
@@ -35,7 +48,7 @@ public class ActivatorVisitor : IXamlNodeVisitor<IRuntimeInflatorConfiguration>
             return false;
         }
 
-        Values[node] = value!;
+        Context.Values[node] = value!;
 
         //set Namescope, register source info, ...
         Config.OnActivatedCallback?.Invoke(node, value!);
@@ -98,9 +111,17 @@ public class ActivatorVisitor : IXamlNodeVisitor<IRuntimeInflatorConfiguration>
         return value != null;
     }
 
-    bool TryCreateFromFactory(IXamlElement node, Type type, ILogger? logger, out object value) => throw new NotImplementedException();
+    bool TryCreateFromFactory(IXamlElement node, Type type, ILogger? logger, out object? value)
+    {
+        value = null;
+        return false;
+    }
 
-    bool TryCreateFromParameterizedCtor(IXamlElement node, Type type, ILogger? logger, out object value) => throw new NotImplementedException();
+    bool TryCreateFromParameterizedCtor(IXamlElement node, Type type, ILogger? logger, out object? value)
+    {
+        value = null;
+        return false;
+    }
 
     bool TryCreateFromDefaultCtor(IXamlElement node, Type type, ILogger? logger, out object? value) {
         try {

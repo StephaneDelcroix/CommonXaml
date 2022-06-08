@@ -11,6 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml.RuntimeInflator"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonXaml.RuntimeInflatorTests", "tests\CommonXaml.RuntimeInflatorTests\CommonXaml.RuntimeInflatorTests.csproj", "{4B737A52-8E99-41E6-AFD8-1FB15DE50975}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8A67D8FF-02DA-4759-B3BF-B52564A83C41}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,5 +64,9 @@ Global
 		$2.NewLineForFinally = False
 		$0.StandardHeader = $3
 		$3.Text = @Copyright (c) Microsoft Corporation.\nLicensed under the MIT License.
+		$0.TextStylePolicy = $4
+		$4.FileWidth = 80
+		$4.TabsToSpaces = True
+		$4.scope = text/plain
 	EndGlobalSection
 EndGlobal

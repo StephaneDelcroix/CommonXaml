@@ -21,15 +21,22 @@ public class XamlParser
 
     bool TryParse(XmlReader reader, out XamlElement? rootnode)
 	{
-		reader.MoveToContent();
-		var success = TryParseElements(reader, out var roots);
+		try {
+			reader.MoveToContent();
+			var success = TryParseElements(reader, out var roots);
 
-		if (roots is not null && roots.Count > 0)
-			rootnode = roots[0] as XamlElement;
-		else
+			if (roots is not null && roots.Count > 0)
+				rootnode = roots[0] as XamlElement;
+			else
+				rootnode = null;
+
+			return success;
+		} catch (Exception e) {
+			Config.Logger.LogException(e);
+
 			rootnode = null;
-
-		return success;
+			return false;
+		}
 	}
 
 	bool TryParseElements(XmlReader reader, out IList<IXamlNode> nodes)

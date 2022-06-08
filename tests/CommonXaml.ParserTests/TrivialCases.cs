@@ -242,4 +242,15 @@ public class TrivialCases
         Assert.True((key.NamespaceUri, key.LocalName) == ("http://commonxaml/controls", "Control.Content"));
         Assert.True(((XamlElement)rootNode.Properties[key].Single()).XamlType == new XamlType("http://commonxaml/controls", "View"));
 	}
+
+	[Test]
+	public void InvalidXamlLogsExceptions()
+	{
+        var (success, root) = parser!.Parse(
+@"<Control>
+</CCONTROL");
+        Assert.That(success, Is.False);
+		var logger = (MockLogger)((XamlParserConfiguration)parser!.Config).Logger!;
+		Assert.That(logger!.Events.Count, Is.EqualTo(1));
+    }
 }

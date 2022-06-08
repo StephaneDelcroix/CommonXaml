@@ -16,6 +16,11 @@ public interface IXamlNodeVisitor<TConfig> where TConfig : IXamlNodeVisitorConfi
     TConfig Config { get; }
 }
 
+public interface IXamlNodeVisitor<TConfig, TContext> : IXamlNodeVisitor<TConfig> where TConfig : IXamlNodeVisitorConfiguration
+{
+	TContext Context { get; }
+}
+
 public static class VisitorExtensions
 {
 	public static bool Accept<TConfig>(this IXamlNode self, IXamlNodeVisitor<TConfig> visitor) where TConfig : IXamlNodeVisitorConfiguration

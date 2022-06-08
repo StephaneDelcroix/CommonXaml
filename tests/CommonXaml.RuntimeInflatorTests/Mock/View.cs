@@ -1,8 +1,7 @@
 ﻿using System;
-namespace CommonXaml.RuntimeInflatorTests
+namespace CommonXaml.RuntimeInflatorTests;
+
+public class View
 {
-    public class View
-    {
-        public string? Text { get; set; }
-    }
+    public string? Text { get; set; }
 }
